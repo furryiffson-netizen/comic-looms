@@ -7,3 +7,9 @@ export function isImage(ext: string) {
 export function isVideo(ext: string) {
   return VIDEO_EXTENSION.includes(ext);
 }
+export function isAnimatedWebp(data: Uint8Array) {
+  const len = Math.min(data.byteLength, 64);
+  let header = "";
+  for (let i = 0; i < len; i++) header += String.fromCharCode(data[i]);
+  return header.startsWith("RIFF") && header.slice(8, 12) === "WEBP" && header.includes("ANIM");
+}

@@ -3,6 +3,7 @@ import EBUS from "./event-bus";
 import ImageNode from "./img-node";
 import { Matcher, OriginMeta, SubData } from "./platform/platform";
 import { evLog } from "./utils/ev-log";
+import { isAnimatedWebp } from "./utils/media-helper";
 
 export type DownloadState = {
   total: number;
@@ -140,6 +141,9 @@ export class IMGFetcher {
               this.node.blobSrc = transient.imgSrcCSP ? this.node.originSrc : URL.createObjectURL(new Blob([this.data], { type: this.contentType }));
             }
             this.node.mimeType = this.contentType;
+            if (this.contentType === "image/webp" && this.data instanceof Uint8Array) {
+              this.node.animated = isAnimatedWebp(this.data);
+            }
             this.node.render((reason) => {
               evLog("error", "render image failed, " + reason);
               this.rendered = false;
